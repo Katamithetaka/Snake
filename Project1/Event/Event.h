@@ -10,7 +10,8 @@ namespace Mountain {
 	enum class EventTypes : uint8_t
 	{
 		None,
-		ChildPress, MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll,
+		Child, 
+		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll,
 		KeyPress, KeyRelease,
 		WindowMove, WindowResize, WindowFocus, WindowLostFocus, WindowClose, ApplicationUpdate
 

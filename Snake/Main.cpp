@@ -45,15 +45,16 @@ int main() {
 			switch (e->GetEventType()) {
 				case EventTypes::WindowClose:
 					window->Close();
-				case EventTypes::ChildPress:
-					
+					break;
+				case EventTypes::Child:
 					if (e->GetWindow() == Button) {
 						window->Close();
 					}
 					else if (e->GetWindow() == Cancel) {
 						window->Close();
 					}
-
+					
+					break;
 
 			}
 		}

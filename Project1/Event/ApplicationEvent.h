@@ -179,10 +179,10 @@ namespace Mountain {
 		float m_DeltaTime;
 	};
 
-	struct ChildPressEvent : public Event {
-		ChildPressEvent() = delete;
+	struct ChildEvent : public Event {
+		ChildEvent() = delete;
 
-		ChildPressEvent(Window* parent, Window* win)
+		ChildEvent(Window* parent, Window* win)
 			: Event(win), m_Parent(parent)
 		{
 
@@ -195,12 +195,12 @@ namespace Mountain {
 		}
 
 		virtual EventTypes GetEventType() const override {
-			return EventTypes::ChildPress;
+			return EventTypes::Child;
 		}
 
 		virtual std::string ToString() const override {
 
-			return "ChildPressEvent: WindowName = " + std::string(m_Window->GetName());
+			return "ChildEvent: WindowName = " + std::string(m_Window->GetName());
 
 		}
 

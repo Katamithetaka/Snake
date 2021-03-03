@@ -37,18 +37,14 @@ namespace Mountain {
 			 }
 		 }
 		 switch (i) {
-			case WM_COMMAND:
-				switch (HIWORD(wparam)) {
-					case BM_CLICK:
-					if (win->lastEvent) {
-						delete win->lastEvent;
-						win->lastEvent = 0;
-					}
-					WindowsWindow* child = reinterpret_cast<WindowsWindow*>(GetPropA((HWND)lparam, "Class"));
-					win->lastEvent = new ChildPressEvent(win, child);
-					return 0;
+			case WM_COMMAND: {
+				if (win->lastEvent) {
+					delete win->lastEvent;
+					win->lastEvent = 0;
 				}
-
+				win->lastEvent = new ChildEvent(win, reinterpret_cast<WindowsWindow*>(GetPropA(HWND(lparam), "Class")));
+				return 0;
+			}
 			case WM_CLOSE:
 				if (win->lastEvent) {
 					delete win->lastEvent;
@@ -85,7 +81,6 @@ namespace Mountain {
 			 LPVOID lpMsgBuf;
 			 LPVOID lpDisplayBuf;
 			 DWORD dw = GetLastError();
-
 			 FormatMessage(
 				 FORMAT_MESSAGE_ALLOCATE_BUFFER |
 				 FORMAT_MESSAGE_FROM_SYSTEM |
