@@ -178,4 +178,35 @@ namespace Mountain {
 	private:
 		float m_DeltaTime;
 	};
+
+	struct ChildPressEvent : public Event {
+		ChildPressEvent() = delete;
+
+		ChildPressEvent(Window* parent, Window* win)
+			: Event(win), m_Parent(parent)
+		{
+
+		}
+
+		virtual uint8_t GetCategoryFlags() const override {
+
+			return EVENT_CATEGORY_INPUT | EVENT_CATEGORY_APPLICATION;
+
+		}
+
+		virtual EventTypes GetEventType() const override {
+			return EventTypes::ChildPress;
+		}
+
+		virtual std::string ToString() const override {
+
+			return "ChildPressEvent: WindowName = " + std::string(m_Window->GetName());
+
+		}
+
+		Window* GetParent() const { return m_Parent; }
+
+	protected:
+		Window* m_Parent;
+	};
 }

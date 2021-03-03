@@ -1,9 +1,8 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (D:\Programming\Vulkan\bin-int\Release-Win32\) contains files shared from another project (Lib.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (D:\Programming\Vulkan\\bin-int\Release-Win32\) contains files shared from another project (Snake.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Main.cpp
   Generating code
-  1 of 95 functions ( 1.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  103 of 120 functions (85.8%) were compiled, the rest were copied from previous compilation.
+    99 functions were new in current compilation
+    3 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Snake.vcxproj -> D:\Programming\Vulkan\bin\Release-Win32\Snake.exe

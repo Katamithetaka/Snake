@@ -10,7 +10,7 @@ namespace Mountain {
 	enum class EventTypes : uint8_t
 	{
 		None,
-		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll,
+		ChildPress, MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll,
 		KeyPress, KeyRelease,
 		WindowMove, WindowResize, WindowFocus, WindowLostFocus, WindowClose, ApplicationUpdate
 
@@ -42,12 +42,16 @@ namespace Mountain {
 
 		uint8_t IsInCategory(uint8_t EventCategoryFlag) { return GetCategoryFlags() & EventCategoryFlag; }
 	
-		Window* m_Window;
+		Window* GetWindow() const { return m_Window; }
+
 
 	protected:
 		Event(Window* win): m_Window(win) 
-		{}
+		{
+			
+		}
 
+		Window* m_Window;
 	};
 
 }

@@ -1,8 +1,6 @@
 ﻿#include <Core/Window.h>
 #include <cstdio>
 
-#include <Windows.h>
-
 #define uint64_t unsigned long long
 
 using namespace Mountain;
@@ -12,11 +10,13 @@ int main() {
 
 	WindowProps props;
 	props.Name = "Device Selection Window";
-	props.Width = 230;
-	props.Height = 159;
-	props.WindowCreationFlags = WINDOW_RESIZABLE;
-	props.x = 0;
-	props.y = 0;
+	props.Width = 310;
+	props.Height = 150;
+	props.WindowCreationFlags = 0;
+	GetDesktopResolution(props.x, props.y);
+	props.x = props.x / 2 - props.Width / 2;
+	props.y = props.y / 2 - props.Height / 2;
+
 	props.Parent = nullptr;
 	
 	Window* window = CreatePlatformWindow(props);
@@ -29,10 +29,13 @@ int main() {
 	int a[3] = { 1, 2, 3 };
 
 
-	Window* DropDown = CreateDropDown("Select Device: ", 20, 20, 140, 20, window, DropDownOptions, 3);
+	const unsigned Width = props.Width;
+	const unsigned offsetBorder = Width / 10, space = offsetBorder / 2, buttonWidth = (Width - offsetBorder * 2 - space) / 2, ddWidth = Width - offsetBorder * 2;
 
-	Window* Button = CreateButton("Finish", 20, 87, 75, 23, window);
-	Window* Cancel = CreateButton("Cancel", 110, 87, 75, 23, window);
+	Window* DropDown = CreateDropDown("Select Device: ", offsetBorder, 20, ddWidth, 20, window, DropDownOptions, 3);
+
+	Window* Button = CreateButton("Finish", offsetBorder, 80, buttonWidth, 25, window);
+	Window* Cancel = CreateButton("Cancel", offsetBorder + buttonWidth + space, 80, buttonWidth, 25, window);
 
 	while (!window->IsClosed()) {
 		
@@ -42,6 +45,16 @@ int main() {
 			switch (e->GetEventType()) {
 				case EventTypes::WindowClose:
 					window->Close();
+				case EventTypes::ChildPress:
+					
+					if (e->GetWindow() == Button) {
+						window->Close();
+					}
+					else if (e->GetWindow() == Cancel) {
+						window->Close();
+					}
+
+
 			}
 		}
 	}

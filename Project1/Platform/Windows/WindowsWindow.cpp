@@ -7,7 +7,7 @@
 	processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #include "Event/ApplicationEvent.h"
-
+#include "Event/MouseEvent.h"
 #include "WindowsWindow.h"
 #include <string>
 #include <iterator>
@@ -23,13 +23,39 @@ namespace Mountain {
 		 
 		 WindowsWindow* win = reinterpret_cast<WindowsWindow*>(GetPropA(hwnd, "Class"));
 
-		 switch (i) {
-			
 
-			 case WM_CLOSE:
-				 if (win->lastEvent) delete win->lastEvent;
-				 win->lastEvent = new WindowCloseEvent(win);
-				 return 0;
+		 if (i == WM_PARENTNOTIFY) {
+			 switch (LOWORD(wparam)) {
+				 case WM_CREATE: {
+					HFONT font = CreateFont(
+						18, 0, 0, 0, FW_MEDIUM, FALSE, FALSE, FALSE, ANSI_CHARSET,
+						OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+						DEFAULT_PITCH | FF_DONTCARE, "Segoe UI");
+					SendMessage((HWND)lparam, WM_SETFONT, WPARAM(font), true);
+					break;
+				 }
+			 }
+		 }
+		 switch (i) {
+			case WM_COMMAND:
+				switch (HIWORD(wparam)) {
+					case BM_CLICK:
+					if (win->lastEvent) {
+						delete win->lastEvent;
+						win->lastEvent = 0;
+					}
+					WindowsWindow* child = reinterpret_cast<WindowsWindow*>(GetPropA((HWND)lparam, "Class"));
+					win->lastEvent = new ChildPressEvent(win, child);
+					return 0;
+				}
+
+			case WM_CLOSE:
+				if (win->lastEvent) {
+					delete win->lastEvent;
+					win->lastEvent = 0;
+				}
+				win->lastEvent = new WindowCloseEvent(win);
+				return 0;
 		 }
 
 		 return DefWindowProc(hwnd, i, wparam, lparam);
@@ -51,6 +77,8 @@ namespace Mountain {
 		 wc.cbWndExtra = sizeof(LONG_PTR);
 		 wc.hInstance = hInstance;
 		 wc.hIconSm = NULL;
+
+
 
 		 if (!RegisterClassEx(&wc)) {
 
@@ -79,9 +107,10 @@ namespace Mountain {
 	 }
  
 
-	 WindowsWindow::WindowsWindow(WindowProps& props) : Props(props), FullscreenDims{}, Hwnd{} {
+	 WindowsWindow::WindowsWindow(WindowProps& props): FullscreenDims{}, Hwnd{} {
 
-		 style |= WS_VISIBLE ;
+		 Props = props;
+		 style |= WS_VISIBLE;
 		 if (Props.WindowCreationFlags & WINDOW_CHILD) {
 			 style |= WS_CHILD;
 			 if (Props.className == "ComboBox") {
@@ -94,11 +123,14 @@ namespace Mountain {
 					 assert(!"Parent doesn't have a HWND");
 				 }
 
+				 Rect = { 0, 0, LONG(Props.Width), LONG(Props.Height) };
+				 AdjustWindowRectEx(&Rect, style, FALSE, 0);
+
 				 Hwnd = CreateWindowEx(0,
 					 Props.className,
 					 Props.Name,
 					 style | CBS_DROPDOWNLIST,
-					 Props.x, Props.y, Props.Width, Props.Height,
+					 Props.x, Props.y, Rect.right - Rect.left, Rect.bottom - Rect.top,
 					 Parent, 0, hInstance, 0);
 				 // Segoe UI
 			 
@@ -133,7 +165,7 @@ namespace Mountain {
 
 			 }
 			 else if (Props.className == "Button") {
-				 style |= BS_DEFPUSHBUTTON;
+				 style |= BS_PUSHBUTTON;
 
 				 hInstance = reinterpret_cast<WindowsWindow*>((props.Parent))->hInstance;
 				 DropDownProps* dpProps = reinterpret_cast<DropDownProps*>(&props);
@@ -143,11 +175,15 @@ namespace Mountain {
 					 assert(!"Parent doesn't have a HWND");
 				 }
 
+
+				 Rect = { 0, 0, LONG(Props.Width), LONG(Props.Height) };
+				 AdjustWindowRectEx(&Rect, style, FALSE, 0);
+
 				 Hwnd = CreateWindowEx(0,
 					 Props.className,
 					 Props.Name,
 					 style,
-					 Props.x, Props.y, Props.Width, Props.Height,
+					 Props.x, Props.y, Rect.right - Rect.left, Rect.bottom - Rect.top,
 					 Parent, 0, hInstance, 0);
 
 				 if (!Hwnd) {
@@ -182,7 +218,7 @@ namespace Mountain {
 
 			 
 
-			 style |= WS_OVERLAPPED | WS_CAPTION | WS_VISIBLE | WS_SYSMENU;
+			 style |= WS_OVERLAPPED | WS_CAPTION | WS_VISIBLE | WS_SYSMENU | WS_CLIPCHILDREN;
 			 if (Props.WindowCreationFlags & WINDOW_RESIZABLE) {
 				 style |= WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 			 }
@@ -195,11 +231,15 @@ namespace Mountain {
 				 Props.className = Props.className == "" ? Props.Name : Props.className;
 				 
 				 GenWNDCLASSEX(Props, hInstance);
+
+				 Rect = { 0, 0, LONG(Props.Width), LONG(Props.Height) };
+				 AdjustWindowRectEx(&Rect, style, FALSE, 0);
+
 				 Hwnd = CreateWindowExA(0,
 					 Props.className,
 					 props.Name,
 					 style,
-					 Props.x, Props.y, Props.Width, Props.Height,
+					 Props.x, Props.y, Rect.right - Rect.left, Rect.bottom - Rect.top,
 					 NULL, NULL, hInstance, NULL);
 
 
@@ -279,26 +319,11 @@ namespace Mountain {
 		return *this;
 	}
 
-	bool CALLBACK SetFont(HWND child, LPARAM font) {
-		SendMessage(child, WM_SETFONT, font, true);
-		return true;
-	}
 
 
 	Event* WindowsWindow::Update() {
 		MSG msg;
 		BOOL bRet;
-		static bool hasSetFont = false;
-	
-		if (!hasSetFont) {
-			HFONT font = CreateFont(
-				18, 0, 0, 0, FW_MEDIUM, FALSE, FALSE, FALSE, ANSI_CHARSET,
-				OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-				DEFAULT_PITCH | FF_DONTCARE, "Segoe UI");
-			SendMessage(Hwnd, WM_SETFONT, (LPARAM)font, true);
-			EnumChildWindows(Hwnd, (WNDENUMPROC)SetFont, (LPARAM)font);
-			hasSetFont = true;
-		}
 
 		if ((bRet = GetMessage(&msg, 0, 0, 0)) != 0)
 		{
@@ -322,6 +347,16 @@ namespace Mountain {
 		DestroyWindow(Hwnd);
 		UnregisterClassA(Props.className, hInstance);
 		m_Closed = true;
+	}
+
+
+	void GetDesktopResolution(unsigned& Width, unsigned& Height)
+	{
+		RECT desktop;
+		const HWND hDesktop = GetDesktopWindow();
+		GetWindowRect(hDesktop, &desktop);
+		Width = desktop.right;
+		Height = desktop.bottom;
 	}
 
 }

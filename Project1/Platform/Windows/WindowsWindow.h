@@ -32,12 +32,11 @@ namespace Mountain {
 	private:
 
 
-		WindowProps Props;
 		friend HWND& GetHWND(Window* Window);
 		friend HINSTANCE& GethInstance(Window* Window);
 		friend LRESULT CALLBACK WndProc(HWND hwnd, UINT i, WPARAM wparam, LPARAM lparam);
 		MONITORINFO FullscreenDims;
-		RECT RealCoords;
+		RECT Rect;
 		HINSTANCE hInstance;
 		unsigned style = 0;
 		HWND Hwnd;
