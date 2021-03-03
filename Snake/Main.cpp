@@ -16,10 +16,32 @@ int main() {
 	GetDesktopResolution(props.x, props.y);
 	props.x = props.x / 2 - props.Width / 2;
 	props.y = props.y / 2 - props.Height / 2;
-
 	props.Parent = nullptr;
-	
 	Window* window = CreatePlatformWindow(props);
+
+
+	/*
+		Vulkan Code.
+	*/
+
+	const char* InstanceLayers[] = {
+		"VK_LAYER_LUNARG_standard_validation"
+	};
+
+	const char* InstanceExtension[] = {
+		"VK_EXT_debug_report"
+	};
+
+	VkApplicationInfo AppInfo;
+	AppInfo.apiVersion = VK_VERSION_1_2;
+	AppInfo.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
+	AppInfo.pApplicationName = "Snake";
+	AppInfo.pEngineName = "Mountain";
+	AppInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	AppInfo.pNext = nullptr;
+	AppInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
+
+
 
 	const char* DropDownOptions[3] = {
 		"",

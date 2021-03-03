@@ -1,4 +1,3 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (D:\Programming\Vulkan\\bin-int\Release-Win32\) contains files shared from another project (Snake.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  KeyboardEvent.h
   WindowsWindow.cpp
   Project1.vcxproj -> D:\Programming\Vulkan\bin\Release-Win32\Lib.lib

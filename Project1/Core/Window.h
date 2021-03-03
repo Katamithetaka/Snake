@@ -65,13 +65,13 @@ namespace Mountain {
 
 		const char* GetName() const { return Props.Name; }
 		
+		WindowProps Props;
 
 	protected:
 		struct Event* lastEvent;
 
 		friend HWND& GetHWND(Window* Window);
 		bool m_Closed = false;
-		WindowProps Props;
 		friend struct Event;
 
 	};

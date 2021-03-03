@@ -1,0 +1,2 @@
+D:\Programming\Vulkan\bin\Debug-Win32\Lib.pdb
+D:\Programming\Vulkan\bin-int\Debug-Win32\Lib.pdb

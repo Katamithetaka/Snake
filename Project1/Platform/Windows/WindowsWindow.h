@@ -31,12 +31,16 @@ namespace Mountain {
 
 	private:
 
+		void _GenWindowClass();
+		void _CreateWindow(); 
+		void _CheckError(bool condition, const char* message);
+		void _MakeStyle();
 
 		friend HWND& GetHWND(Window* Window);
 		friend HINSTANCE& GethInstance(Window* Window);
 		friend LRESULT CALLBACK WndProc(HWND hwnd, UINT i, WPARAM wparam, LPARAM lparam);
-		MONITORINFO FullscreenDims;
-		RECT Rect;
+
+		
 		HINSTANCE hInstance;
 		unsigned style = 0;
 		HWND Hwnd;
