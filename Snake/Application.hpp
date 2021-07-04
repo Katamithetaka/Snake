@@ -1,6 +1,8 @@
 #ifndef MOUNTAIN_APP_INCLUDED
 #define MOUNTAIN_APP_INCLUDED
 
+#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+
 #include <vulkan/vulkan.hpp>
 #include <vkfw/vkfw.hpp>
 #include <set>
@@ -29,6 +31,9 @@ namespace Mountain
 	{
 		Application() 
 		{
+			vk::DynamicLoader dl;
+			PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+			VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 			Logger::Init();
 		}
 		
@@ -41,15 +46,14 @@ namespace Mountain
 
 			vk::ApplicationInfo appInfo(AppName, AppVersion, "MountainEngine", VK_MAKE_API_VERSION(0, 1, 0, 0), ApiVersion);
 			Instance = vk::createInstance(vk::InstanceCreateInfo(vk::InstanceCreateFlagBits(0), &appInfo, layers, requiredExtensions));
-
+			VULKAN_HPP_DEFAULT_DISPATCHER.init(Instance);
 		}
 
 		void CreateDebugMessenger(vk::DebugUtilsMessengerCreateInfoEXT createInfo)
 		{
 			if(Instance)
 			{
-				vk::DispatchLoaderDynamic loader(Instance, vkGetInstanceProcAddr);
-				DebugMessenger = Instance.createDebugUtilsMessengerEXT(createInfo, nullptr, loader);
+				DebugMessenger = Instance.createDebugUtilsMessengerEXT(createInfo, nullptr);
 			}
 			else
 			{
@@ -96,7 +100,10 @@ namespace Mountain
 
 		vk::Device CreateDevice(vk::PhysicalDeviceFeatures features, const std::vector<vk::DeviceQueueCreateInfo>& queueCreateInfos, const std::vector<const char*>& deviceExtensions) 
 		{
-			return Device = PhysicalDevice.createDevice(vk::DeviceCreateInfo(vk::DeviceCreateFlagBits(0), queueCreateInfos, Layers, deviceExtensions, &features));
+			Device = PhysicalDevice.createDevice(vk::DeviceCreateInfo(vk::DeviceCreateFlagBits(0), queueCreateInfos, Layers, deviceExtensions, &features));
+			VULKAN_HPP_DEFAULT_DISPATCHER.init(Device);
+
+			return Device;
 		}
 
 		vk::SwapchainKHR CreateSwapChain(vk::SwapchainCreateInfoKHR createInfo)
@@ -321,7 +328,6 @@ protected:
 
 		// For backwards compatibility
 		std::vector<const char*> Layers;
-
 	};
 
 }

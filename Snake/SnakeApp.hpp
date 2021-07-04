@@ -511,10 +511,23 @@ struct SnakeApp : public Mountain::Application
 
 	void Run()
 	{
+		static size_t frames = 0;
+		static double lastFrame = vkfw::getTime();
+
 		while(Running())
 		{
+			double now = vkfw::getTime();
+			
+			if(now - lastFrame > 1)
+			{
+				Window.setTitle(std::string("Snake Game - ") + std::to_string(frames) + "FPS");
+				frames = 0;
+				lastFrame = now;
+			}
+			
 			vkfw::pollEvents();
 			Draw();
+			++frames;
 		}
 
 		Device.waitIdle();

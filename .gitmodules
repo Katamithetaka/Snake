@@ -7,3 +7,6 @@
 [submodule "Vendor/spdlog"]
 	path = Vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Vendor/Vulkan"]
+	path = Vendor/Vulkan
+	url = https://github.com/KhronosGroup/Vulkan-Headers
