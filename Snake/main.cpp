@@ -10,7 +10,7 @@ int main()
 		MTN_CRITICAL(e.what());
 	}
 
-	std::cin.get();
+//	std::cin.get();
 	
 // double totalTime = vkfw::getTime();
 // double lastFrame = totalTime;

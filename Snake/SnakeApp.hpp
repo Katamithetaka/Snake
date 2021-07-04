@@ -98,11 +98,6 @@ struct SnakeApp : public Mountain::Application
 
 	~SnakeApp()
 	{
-		vk::DispatchLoaderDynamic loader;
-
-		if(Device) loader = vk::DispatchLoaderDynamic(Instance, vkGetInstanceProcAddr, Device, vkGetDeviceProcAddr);
-		else if(Instance) loader = vk::DispatchLoaderDynamic(Instance, vkGetInstanceProcAddr);
-
 		Device.waitIdle();
 		Device.destroyCommandPool(CommandPool);
 		for(auto& framebuffer: SwapChainFramebuffers)
@@ -124,7 +119,7 @@ struct SnakeApp : public Mountain::Application
 		}
 		Device.destroyPipeline(GraphicsPipeline);
 		Device.destroyPipelineLayout(PipelineLayout);
-		Device.destroyRenderPass(RenderPass, nullptr, loader);
+		Device.destroyRenderPass(RenderPass, nullptr);
 
 	}
 
@@ -337,7 +332,7 @@ struct SnakeApp : public Mountain::Application
 		rasterizer.rasterizerDiscardEnable = VK_FALSE;
 		rasterizer.polygonMode = vk::PolygonMode::eFill;
 		rasterizer.lineWidth = 1.0;
-		rasterizer.cullMode = vk::CullModeFlagBits::eBack;
+		rasterizer.cullMode = vk::CullModeFlagBits::eFront;
 		rasterizer.frontFace = vk::FrontFace::eClockwise;
 		rasterizer.depthBiasEnable = VK_FALSE;
 		rasterizer.depthBiasConstantFactor = 0.0f;

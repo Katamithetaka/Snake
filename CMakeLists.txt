@@ -7,21 +7,23 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/bin/)
-
+set(BUILD_SHARED_LIBS ON)
+set(SHADERC_SKIP_TESTS ON)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(Vendor/GLFW)
 add_subdirectory(Vendor/spdlog)
-find_package(Vulkan REQUIRED FATAL_ERROR)
+add_subdirectory(Vendor/Vulkan)
+add_subdirectory(Vendor/shaderCompiler)
 
 set(GAME_NAME Snake)
 
 set(SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${GAME_NAME}/shaders)
 file(GLOB SHADERS ${SHADER_DIR}/*.vert ${SHADER_DIR}/*.frag ${SHADER_DIR}/*.comp ${SHADER_DIR}/*.geom ${SHADER_DIR}/*.tesc ${SHADER_DIR}/*.tese ${SHADER_DIR}/*.mesh ${SHADER_DIR}/*.task ${SHADER_DIR}/*.rgen ${SHADER_DIR}/*.rchit ${SHADER_DIR}/*.rmiss)
 
-find_package(Vulkan REQUIRED FATAL_ERROR)
+set(Vulkan_GLSLC_EXECUTABLE $<TARGET_FILE:glslc>/)
 
 foreach(SHADER IN LISTS SHADERS)
     get_filename_component(FILENAME ${SHADER} NAME)
@@ -38,15 +40,13 @@ add_custom_target(shaders ALL DEPENDS ${SPV_SHADERS})
 aux_source_directory(${GAME_NAME} GAME_SOURCE)
 add_executable(${GAME_NAME} ${GAME_SOURCE} ${SHADERS})
 
-
 foreach(SHADER IN LISTS SPV_SHADERS)
     add_custom_command(
     TARGET ${GAME_NAME} 
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${EXECUTABLE_OUTPUT_PATH}/$<CONFIG>/Shaders/
-    COMMAND ${CMAKE_COMMAND} -E copy ${SHADER} ${EXECUTABLE_OUTPUT_PATH}/$<CONFIG>/Shaders/
-#   COMMAND ${CMAKE_COMMAND} -E copy_directory ${EXECUTABLE_OUTPUT_PATH}/$<CONFIG>/ ${CMAKE_CURRENT_LIST_DIR}
-#   COMMAND ${CMAKE_COMMAND} -E rm ${CMAKE_CURRENT_LIST_DIR}/${GAME_NAME}.pdb
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders/
+    COMMAND ${CMAKE_COMMAND} -E copy ${SHADER} $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders/
+    COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE_DIR:${GAME_NAME}> ${CMAKE_CURRENT_LIST_DIR}
 #   COMMAND ${CMAKE_COMMAND} -E rm -r -f ${CMAKE_CURRENT_LIST_DIR}/build/
 #   COMMAND ${CMAKE_COMMAND} -E rm -r -f ${CMAKE_CURRENT_LIST_DIR}/Snake/
 #   COMMAND ${CMAKE_COMMAND} -E rm -r -f  ${CMAKE_CURRENT_LIST_DIR}/Vendor/
@@ -69,6 +69,14 @@ add_compile_definitions(
     $<$<CONFIG:MinSizeRel>:RelWithDebInfo>
 )
 
-target_include_directories(${GAME_NAME} PUBLIC ${Vulkan_INCLUDE_DIR} Vendor/GLFW/Include Vendor/vkfw/Include Vendor/spdlog/Include)
-target_link_libraries(${GAME_NAME} ${Vulkan_LIBRARY} glfw spdlog)
+target_include_directories(${GAME_NAME} PUBLIC Vendor/Vulkan/include Vendor/GLFW/Include Vendor/vkfw/Include Vendor/spdlog/Include)
+target_link_libraries(${GAME_NAME} glfw spdlog)
+
+add_custom_command(
+    TARGET ${GAME_NAME} 
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw> ${EXECUTABLE_OUTPUT_PATH}/$<CONFIG>/
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:spdlog> ${EXECUTABLE_OUTPUT_PATH}/$<CONFIG>/
+)
+
 add_dependencies(${GAME_NAME} shaders)

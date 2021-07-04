@@ -13,6 +13,8 @@
 #include <iostream>
 #include "Logger.hpp"
 
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+
 namespace Mountain 
 {
 
@@ -32,8 +34,8 @@ namespace Mountain
 		Application() 
 		{
 			vk::DynamicLoader dl;
-			PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
-			VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+			PFN_vkGetInstanceProcAddr procAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+			VULKAN_HPP_DEFAULT_DISPATCHER.init(procAddr);
 			Logger::Init();
 		}
 		
@@ -143,12 +145,7 @@ namespace Mountain
 		}
 
 		~Application() {
-			vk::DispatchLoaderDynamic loader;
-
-			if(Device) loader = vk::DispatchLoaderDynamic(Instance, vkGetInstanceProcAddr, Device, vkGetDeviceProcAddr);
-			else if(Instance) loader = vk::DispatchLoaderDynamic(Instance, vkGetInstanceProcAddr);
-			
-			if(Instance) Instance.destroyDebugUtilsMessengerEXT(DebugMessenger, nullptr, loader);
+			if(Instance) Instance.destroyDebugUtilsMessengerEXT(DebugMessenger, nullptr);
 			if(SwapChain) Device.destroySwapchainKHR(SwapChain);
 			if(Surface) Instance.destroySurfaceKHR(Surface);
 			if(Device) Device.destroy();
