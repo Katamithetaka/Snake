@@ -20,13 +20,13 @@ Go to <a href="https://github.com/Katamithetaka/Snake/releases">The release tab<
 git clone https://github.com/Katamithetaka/Snake --recursive 
 ```
 
-2. Download and install the <a href="https://vulkan.lunarg.com/">Vulkan SDK</a>, make sure that it added a VULKAN_SDK entry to the environment variables.
+2. Download <a href="https://www.python.org/downloads/">python 3.x</a>.
 
 3. Download <a href="https://cmake.org/download/"> Cmake. </a> and make sure it was added to the path.
 
 4. Check the content of buildWindows.bat to make sure that i'm not hacking you and then run it.
 
-5. You now have the application in the bin/Release folder.
+5. The application is now in the main folder, you can delete everything except the executable and dll files.
 
 
 
