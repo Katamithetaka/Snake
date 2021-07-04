@@ -11,3 +11,12 @@
 	path = Vendor/Vulkan
 	url = https://github.com/KhronosGroup/Vulkan-Headers
 
+[submodule "Vendor/glslang"]
+	path = Vendor/glslang
+	url = https://github.com/KhronosGroup/glslang
+[submodule "Vendor/shaderc"]
+	path = Vendor/shaderc
+	url = https://github.com/google/shaderc
+[submodule "Vendor/spirv-tools"]
+	path = Vendor/spirv-tools
+	url = https://github.com/KhronosGroup/SPIRV-Tools.git

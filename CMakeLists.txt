@@ -6,9 +6,16 @@ project(Vulkan VERSION 0.0.1)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/bin/)
-set(BUILD_SHARED_LIBS ON)
+
+add_subdirectory(Vendor/glslang)
+
 set(SHADERC_SKIP_TESTS ON)
+
+add_subdirectory(Vendor/shaderc)
+
+
+set(BUILD_SHARED_LIBS ON)
+set(ENABLE_CTEST OFF "Enables testing")
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -16,14 +23,15 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(Vendor/GLFW)
 add_subdirectory(Vendor/spdlog)
 add_subdirectory(Vendor/Vulkan)
-add_subdirectory(Vendor/shaderCompiler)
 
 set(GAME_NAME Snake)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/bin/)
+
 
 set(SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${GAME_NAME}/shaders)
 file(GLOB SHADERS ${SHADER_DIR}/*.vert ${SHADER_DIR}/*.frag ${SHADER_DIR}/*.comp ${SHADER_DIR}/*.geom ${SHADER_DIR}/*.tesc ${SHADER_DIR}/*.tese ${SHADER_DIR}/*.mesh ${SHADER_DIR}/*.task ${SHADER_DIR}/*.rgen ${SHADER_DIR}/*.rchit ${SHADER_DIR}/*.rmiss)
 
-set(Vulkan_GLSLC_EXECUTABLE $<TARGET_FILE:glslc>/)
+set(Vulkan_GLSLC_EXECUTABLE )
 
 foreach(SHADER IN LISTS SHADERS)
     get_filename_component(FILENAME ${SHADER} NAME)
