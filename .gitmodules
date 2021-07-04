@@ -4,3 +4,6 @@
 [submodule "Vendor/vkfw"]
 	path = Vendor/vkfw
 	url = https://github.com/Cvelth/vkfw
+[submodule "Vendor/spdlog"]
+	path = Vendor/spdlog
+	url = https://github.com/gabime/spdlog
