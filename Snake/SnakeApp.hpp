@@ -1,6 +1,7 @@
 #ifndef SNAKE_APP_HPP
 #define SNAKE_APP_HPP
 
+#define VULKAN_HPP_NO_NODISCARD_WARNINGS
 #include "Application.hpp"
 #include <optional>
 
@@ -177,14 +178,14 @@ struct SnakeApp : public Mountain::Application
 			}
 		}
 
-		//for (const auto& availablePresentMode : availablePresentModes)
-		//{
-		//	if (availablePresentMode == vk::PresentModeKHR::eImmediate) 
-		//	{
-		//		MTN_INFO("Immediate Mode.")
-		//		return availablePresentMode;
-		//	}
-		//}
+//		for (const auto& availablePresentMode : availablePresentModes)
+//		{
+//			if (availablePresentMode == vk::PresentModeKHR::eImmediate) 
+//			{
+//				MTN_INFO("Immediate Mode.");
+//				return availablePresentMode;
+//			}
+//		}
 
 		MTN_INFO("VSync Mode.");
 		return vk::PresentModeKHR::eFifo;

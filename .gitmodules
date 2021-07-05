@@ -10,22 +10,3 @@
 [submodule "Vendor/Vulkan"]
 	path = Vendor/Vulkan
 	url = https://github.com/KhronosGroup/Vulkan-Headers
-
-[submodule "Vendor/glslang"]
-	path = Vendor/glslang
-	url = https://github.com/KhronosGroup/glslang
-[submodule "Vendor/shaderc"]
-	path = Vendor/shaderc
-	url = https://github.com/google/shaderc
-[submodule "Vendor/spirv-tools"]
-	path = Vendor/spirv-tools
-	url = https://github.com/KhronosGroup/SPIRV-Tools.git
-[submodule "Vendor/spirv-data/effcee"]
-	path = Vendor/spirv-data/effcee
-	url = https://github.com/google/effcee.git
-[submodule "Vendor/spirv-data/re2"]
-	path = Vendor/spirv-data/re2
-	url = https://github.com/google/re2.git
-[submodule "Vendor/spirv-data/spirv-headers"]
-	path = Vendor/spirv-data/spirv-headers
-	url = https://github.com/KhronosGroup/SPIRV-Headers.git
