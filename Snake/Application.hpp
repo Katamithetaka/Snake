@@ -1,5 +1,10 @@
 #ifndef MOUNTAIN_APP_INCLUDED
 #define MOUNTAIN_APP_INCLUDED
+#ifdef DIST
+	#ifdef _MSC_VER
+	#    pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+	#endif
+#endif
 
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 
