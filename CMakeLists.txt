@@ -49,7 +49,6 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 
     add_custom_command(TARGET ${GAME_NAME}
         POST_BUILD 
-        COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders
         COMMAND ${CMAKE_COMMAND} -E make_directory ${SHADER_DIR}/Compiled
     )
 
@@ -82,6 +81,7 @@ target_link_libraries(${GAME_NAME} spdlog glfw ${CMAKE_DL_LIBS})
 
 add_custom_command(TARGET ${GAME_NAME}
     POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw> $<TARGET_FILE_DIR:${GAME_NAME}>/
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${GAME_NAME}>/
     COMMAND ${CMAKE_COMMAND} -E copy_directory  ${SHADER_DIR}/Compiled $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders
