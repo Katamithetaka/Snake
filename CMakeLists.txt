@@ -72,7 +72,7 @@ endif()
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Vendor/GLFW)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Vendor/spdlog)
-target_include_directories(${GAME_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Vendor/GLFW/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/spdlog/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/vkfw/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/vulkan/include)
+target_include_directories(${GAME_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Vendor/GLFW/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/spdlog/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/vkfw/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/Vulkan/include)
 if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/Vendor/Vulkan/include/vulkan/vulkan.hpp)
     message(FATAL "Couldn't find vulkan.hpp")
 endif()
