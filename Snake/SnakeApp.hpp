@@ -279,7 +279,7 @@ struct SnakeApp : public Mountain::Application
 		createInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
 		createInfo.presentMode = PresentMode;
 		createInfo.clipped = VK_TRUE;
-		createInfo.oldSwapchain = VK_NULL_HANDLE;
+		createInfo.oldSwapchain = nullptr;
 
 		Application::CreateSwapChain(createInfo);
 	}
@@ -388,7 +388,7 @@ struct SnakeApp : public Mountain::Application
 		pipelineInfo.layout = PipelineLayout;
 		pipelineInfo.renderPass = RenderPass;
 		pipelineInfo.subpass = 0;
-		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+		pipelineInfo.basePipelineHandle = nullptr;
 		pipelineInfo.basePipelineIndex = -1;
 
 		Device.createGraphicsPipelines(vk::PipelineCache(), 1, &pipelineInfo, nullptr, &GraphicsPipeline);
@@ -534,7 +534,7 @@ struct SnakeApp : public Mountain::Application
 		imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
         renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
         inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-        imagesInFlight.resize(SwapChainImages.size(), VK_NULL_HANDLE);
+        imagesInFlight.resize(SwapChainImages.size(), nullptr);
 
 		vk::SemaphoreCreateInfo semaphoreInfo;
 
@@ -552,7 +552,7 @@ struct SnakeApp : public Mountain::Application
 	void Draw()
 	{
 		Device.waitForFences(1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-		uint32_t imageIndex = Device.acquireNextImageKHR(SwapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE);
+		uint32_t imageIndex = Device.acquireNextImageKHR(SwapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame]);
 		
         if (imagesInFlight[imageIndex]) {
 
