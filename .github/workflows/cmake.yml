@@ -22,7 +22,7 @@ jobs:
         config:
           - os: windows-latest
           - os: macos-latest
-          - os
+          - os: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -41,7 +41,8 @@ jobs:
     - name: Use cmake
       run: cmake --version
         
-    - name: Download GLFW dependencies
+    - if: matrix.config.os == 'ubuntu-latest'
+      name: Download GLFW dependencies
       run: sudo apt-get install xorg-dev
 
     - name: Configure CMake
