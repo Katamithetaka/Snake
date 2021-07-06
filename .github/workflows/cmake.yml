@@ -84,7 +84,7 @@ jobs:
         # you like, remember that they need to be different for each platform.
         # You can choose any build matrix parameters. For Rust I use the
         # target triple.
-        asset_name: Snake-${{ matrix.config.os }}
+        asset_name: Snake-${{ matrix.config.os }}.7z
         # The path to the file you want to upload.
         asset_path: ${{github.workspace}}/Snake.7z
         # probably you will need to change it, but most likely you are
