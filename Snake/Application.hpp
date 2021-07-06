@@ -146,7 +146,8 @@ namespace Mountain
 		// Note that the window will be deleted automatically when the app is destroyed.
 		vkfw::Window& SetVKFWWindow(vkfw::Window window)
 		{
-			return Window = window;
+			Window = window;
+			return Window;
 		}
 
 		~Application() {
