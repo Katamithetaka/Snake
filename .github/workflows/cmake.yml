@@ -77,7 +77,7 @@ jobs:
     - name: zip
       uses: papeloto/action-zip@v1
       with:
-          files: ${{github.workspace}}/bin/
+          files: bin/Release
           dest: Snake.zip
 
 
