@@ -76,7 +76,9 @@ target_include_directories(${GAME_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Vendor/
 if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/Vendor/Vulkan/include/vulkan/vulkan.hpp)
     message(FATAL "Couldn't find vulkan.hpp")
 endif()
-target_link_libraries(${GAME_NAME} spdlog glfw)
+
+
+target_link_libraries(${GAME_NAME} spdlog glfw ${CMAKE_DL_LIBS})
 
 add_custom_command(TARGET ${GAME_NAME}
     POST_BUILD
