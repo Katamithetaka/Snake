@@ -74,7 +74,8 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-     - uses: papeloto/action-zip@v1
+    - name: zip
+      uses: papeloto/action-zip@v1
       with:
           files: ${{github.workspace}}/bin/Release/
           dest: Snake.zip
