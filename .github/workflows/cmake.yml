@@ -22,6 +22,14 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
+
+    - name: Setup cmake
+      uses: jwlawson/actions-setup-cmake@v1.9
+      with:
+        cmake-version: '3.20.x'
+        
+    - name: Use cmake
+      run: cmake --version
         
     - name: Download GLFW dependencies
       run: sudo apt-get install xorg-dev
