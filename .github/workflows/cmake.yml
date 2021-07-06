@@ -85,7 +85,7 @@ jobs:
       uses: papeloto/action-zip@v1
       with:
           files: ${{github.workspace}}/bin/Release
-          dest: ${{github.workspace}}/Snake.7z
+          dest: Snake.7z
 
 
     - name: Upload Asset
