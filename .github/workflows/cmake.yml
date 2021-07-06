@@ -73,19 +73,11 @@ jobs:
     - name: Build
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-    
-    - if: matrix.config.os == 'ubuntu-latest'
-      name: Archive Release (Linux)
-      uses: thedoctor0/zip-release@master
-      with:
-        filename: '${{github.workspace}}/Snake.7z'
-        directory: ${{github.workspace}}/bin/Release
 
-    - if: matrix.config.os != 'ubuntu-latest'
       uses: papeloto/action-zip@v1
       with:
-          files: ${{github.workspace}}/bin/Release
-          dest: Snake.7z
+          files: ${{github.workspace}}/bin/Release/
+          dest: Snake.zip
 
 
     - name: Upload Asset
@@ -98,9 +90,9 @@ jobs:
         # you like, remember that they need to be different for each platform.
         # You can choose any build matrix parameters. For Rust I use the
         # target triple.
-        asset_name: Snake-${{ matrix.config.os }}.7z
+        asset_name: Snake-${{ matrix.config.os }}.zip
         # The path to the file you want to upload.
-        asset_path: ${{github.workspace}}/Snake.7z
+        asset_path: ${{github.workspace}}/Snake.zip
         # probably you will need to change it, but most likely you are
         # uploading a binary file
         asset_content_type: application/x-7z-compressed
