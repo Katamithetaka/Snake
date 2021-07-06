@@ -26,7 +26,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_name: "Release Snake Game #${{ github.run_id }}"
-          tag_name: SnakeAlpha 
+          tag_name: SnakeAlpha${{github.run_number}} 
           draft: false
           prerelease: false
 
