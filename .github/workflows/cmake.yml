@@ -11,19 +11,39 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  build-linux:
+
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    # Note this. We are going to use that in further jobs.
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+  build-and-release:
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ${{matrix.config.os}}
+    needs: create_release 
     strategy:
       matrix:
         config:
           - os: windows-latest
           - os: macos-latest
           - os: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v2
       with:
@@ -53,4 +73,23 @@ jobs:
     - name: Build
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Upload Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        # This is how it will be named on the release page. Put hatever name
+        # you like, remember that they need to be different for each platform.
+        # You can choose any build matrix parameters. For Rust I use the
+        # target triple.
+        asset_name: Snake-${{ matrix.config.os }}
+        # The path to the file you want to upload.
+        asset_path: ./Snake.7z
+        # probably you will need to change it, but most likely you are
+        # uploading a binary file
+        asset_content_type: application/x-7z-compressed
+
+    
       
