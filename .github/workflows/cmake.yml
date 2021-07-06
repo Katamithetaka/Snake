@@ -74,10 +74,6 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - uses: edgarrc/action-7z@v1
-      with:
-        args: 7z a -t7z -mx=9 ${{github.workspace}}/Snake.7z ${{github.workspace}}/bin/Release
-
     - name: Upload Asset
       uses: actions/upload-release-asset@v1
       env:
