@@ -11,28 +11,31 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  build-linux:
+  build-and-release:
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
+    runs-on: ${{matrix.config.os}}
+    strategy:
+      matrix:
+        config:
+          - os: windows-latest
+          - os: macos-latest
+          - os: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
 
-    - name: Setup cmake
-      uses: jwlawson/actions-setup-cmake@v1.9
-      with:
-        cmake-version: '3.20.x'
-        
-    - name: Use cmake
-      run: cmake --version
-        
     - name: Download GLFW dependencies
+    - if: matrix.config.os == 'ubuntu-latest'
       run: sudo apt-get install xorg-dev
+    - if: matrix.config.os == 'macos-latest'
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -42,10 +45,4 @@ jobs:
     - name: Build
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.  
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
       
