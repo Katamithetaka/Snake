@@ -25,7 +25,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
@@ -76,7 +75,7 @@ jobs:
 
     - uses: edgarrc/action-7z@v1
       with:
-        args: 7z a -t7z -mx=9 build.7z ./bin/Release
+        args: 7z a -t7z -mx=9 ${{github.workspace}}/Snake.7z ${{github.workspace}}/bin/Release
 
     - name: Upload Asset
       uses: actions/upload-release-asset@v1
@@ -90,7 +89,7 @@ jobs:
         # target triple.
         asset_name: Snake-${{ matrix.config.os }}
         # The path to the file you want to upload.
-        asset_path: ./Snake.7z
+        asset_path: ${{github.workspace}}/Snake.7z
         # probably you will need to change it, but most likely you are
         # uploading a binary file
         asset_content_type: application/x-7z-compressed
