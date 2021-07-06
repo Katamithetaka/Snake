@@ -25,7 +25,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          release_name: Release Snake Game \#${{ GITHUB_RUN_ID }}
+          release_name: Release Snake Game \#${{ env.GITHUB_RUN_ID }}
           tag_name: Snake Game 
           draft: false
           prerelease: false
