@@ -70,9 +70,9 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     
 endif()
 
-add_subdirectory(Vendor/GLFW)
-add_subdirectory(Vendor/spdlog)
-target_include_directories(${GAME_NAME} PUBLIC Vendor/GLFW/include Vendor/spdlog/include Vendor/vkfw/include Vendor/vulkan/include)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Vendor/GLFW)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Vendor/spdlog)
+target_include_directories(${GAME_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Vendor/GLFW/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/spdlog/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/vkfw/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/vulkan/include)
 target_link_libraries(${GAME_NAME} spdlog glfw)
 
 add_custom_command(TARGET ${GAME_NAME}
