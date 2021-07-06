@@ -568,7 +568,7 @@ struct SnakeApp : public Mountain::Application
 
 		Device.resetFences(1, &inFlightFences[currentFrame]);
 
-		vk::SubmitInfo submitInfo = vk::SubmitInfo::SubmitInfo(waitSemaphores, waitStages, pCommandBuffer, signalSemaphores);
+		vk::SubmitInfo submitInfo = vk::SubmitInfo(waitSemaphores, waitStages, pCommandBuffer, signalSemaphores);
 
 		graphicsQueue.submit(1, &submitInfo, inFlightFences[currentFrame]);
 		vk::PresentInfoKHR presentInfo;
