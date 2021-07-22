@@ -225,6 +225,8 @@ void SnakeApp::InitApp()
 {
 	snake.applePos = GenerateApple();
 	snake.head = glm::vec2((float)(config.gridCount >> 1), (float)(config.gridCount >> 1));
+	snake.direction = Direction::None;
+	snake.input = Direction::None;
 	snake.tailSize = snake.defaultSize;
 	snake.tail.resize(snake.defaultSize, {snake.head, Direction::None});
 	std::fill(vertices.begin(), vertices.end(), Vertex{{-1.f, -1.f}, {0.f, 0.f, 0.f}, 0.0f});
@@ -1019,14 +1021,15 @@ bool SnakeApp::CopyBuffer(size_t size, vk::Buffer& src, vk::Buffer& dst)
 
 void SnakeApp::FillVertices()
 {
-	vertices[0] = {snake.head + glm::vec2(0.0, 0.0), snake.color, 0}; // bottom left
-	vertices[1] = {snake.head + glm::vec2(0.0, 1.0), snake.color, 0}; // top left
-	vertices[2] = {snake.head + glm::vec2(1.0, 1.0), snake.color, 0}; // top right
-	vertices[3] = {snake.head + glm::vec2(1.0, 0.0), snake.color, 0}; // bottom right
+
+	vertices[0] = {glm::vec2(snake.head) + glm::vec2(0.0, 0.0), snake.headColor, 0}; // bottom left
+	vertices[1] = {glm::vec2(snake.head) + glm::vec2(0.0, 1.0), snake.headColor, 0}; // top left
+	vertices[2] = {glm::vec2(snake.head) + glm::vec2(1.0, 1.0), snake.headColor, 0}; // top right
+	vertices[3] = {glm::vec2(snake.head) + glm::vec2(1.0, 0.0), snake.headColor, 0}; // bottom right
 	
 	for(size_t i = 0; i < snake.tail.size(); ++i)
 	{
-		size_t j = i * 4;
+		size_t j = (i + 1) * 4;
 		vertices[j + 0] = {glm::vec2(snake.tail[i].position) + glm::vec2(0.0, 0.0), snake.color, 0}; // bottom left
 		vertices[j + 1] = {glm::vec2(snake.tail[i].position) + glm::vec2(0.0, 1.0), snake.color, 0}; // top left
 		vertices[j + 2] = {glm::vec2(snake.tail[i].position) + glm::vec2(1.0, 1.0), snake.color, 0}; // top right
@@ -1212,24 +1215,19 @@ bool SnakeApp::Update(const double& deltaTime)
 	static double total = 0.0;
 	static auto updatePos = [&](glm::vec2& position, Direction dir)
 	{
-		double dt = deltaTime;
-		if(1 / snake.speed * 2 <= deltaTime) dt = (1 / snake.speed);
-		if(snake.input != Direction::None)
-		{
-			dt = (1 / snake.speed);
-			total = (1 / snake.speed) + deltaTime;
-		}
 		switch(dir)
 		{
-			case Direction::Left: position += glm::vec2(-1.0, 0.0) * float(snake.speed * dt); break;
-			case Direction::Right: position += glm::vec2(1.0, 0.0) * float(snake.speed * dt); break;
-			case Direction::Up:    position += glm::vec2(0.0, 1.0) * float(snake.speed * dt); break;
-			case Direction::Down:  position += glm::vec2(0.0,-1.0) * float(snake.speed * dt); break;
+			case Direction::Left:    position -=    glm::vec2(1.0, 0.0) * float(snake.speed * deltaTime); break;
+			case Direction::Right:   position +=   glm::vec2(1.0, 0.0) * float(snake.speed * deltaTime); break;
+			case Direction::Down:    position += glm::vec2(0.0, 1.0) * float(snake.speed * deltaTime); break;
+			case Direction::Up:      position -=     glm::vec2(0.0, 1.0) * float(snake.speed * deltaTime); break;
 			default: break;
 		}
 	};
 
-	if(snake.direction != Direction::None || snake.input != Direction::None)
+	MTN_INFO(snake.input != Direction::None); 
+
+	if(snake.direction != Direction::None)
 	{
 		
 		total += deltaTime;
@@ -1237,38 +1235,62 @@ bool SnakeApp::Update(const double& deltaTime)
 		updatePos(snake.head, snake.direction);
 		for(size_t i = 0; i < snake.tail.size(); ++i) updatePos(snake.tail[i].position, snake.tail[i].direction);
 
-		
 
-		if(total >= 1/snake.speed)
+
+		if(total >= 1 / snake.speed)
 		{
 			total = 0;
-			snake.head = glm::floor(snake.head);
-			for(size_t i = snake.tail.size() - 1; i > 0; --i)
-			{
-				snake.tail[i].position = glm::floor(snake.tail[i].position);
-				snake.tail[i].direction = snake.tail[i - 1].direction;
-			}
-			if(snake.tailSize > snake.tail.size()) snake.tail.push_back({snake.tail.back().position, Direction::None});
-			snake.tail[0].position = glm::floor(snake.tail[0].position);
-			snake.tail[0].direction = snake.direction;
-			snake.direction = snake.input;
-			snake.input = Direction::None;
+			if(snake.direction == Direction::Left || snake.direction == Direction::Up) snake.head = glm::ceil(snake.head);
+			else snake.head = glm::floor(snake.head);
 
-			for(auto tailPart : snake.tail)
+			for(auto& tailPart : snake.tail)
 			{
+				if(tailPart.direction == Direction::Left || tailPart.direction == Direction::Up) tailPart.position = glm::ceil(tailPart.position);
+				else tailPart.position = glm::floor(tailPart.position);
+
 				if(snake.head == tailPart.position) 
 				{
-					InitApp();
-					break;
+					Reset();
+					return true;
 				}
+
+	
+			}
+
+			for(size_t i = snake.tail.size() - 1; i > 0; --i)
+			{
+				snake.tail[i].direction = snake.tail[i-1].direction;
+			}
+
+			if(snake.tail.size() < snake.tailSize) snake.tail.push_back({snake.tail.back().position, Direction::None});
+
+
+			snake.tail[0].direction = snake.direction;
+
+			if(snake.head.x == 0 || snake.head.x == config.gridCount || snake.head.y == 0 || snake.head.y == config.gridCount) 
+			{	
+				Reset();
+				return true;
 			}
 
 			if(snake.head == snake.applePos)
 			{
 				snake.tailSize += snake.increment;
 				snake.applePos = GenerateApple();
+				// Score
+			}
+
+			if(snake.input != Direction::None)
+			{
+				snake.direction = snake.input;
+				snake.input = Direction::None;
 			}
 		}
+	}
+	if(snake.direction == Direction::None && snake.input != Direction::None) 
+	{
+		snake.direction = snake.input;
+		snake.input = Direction::None;
 	}
 
 	FillVertices();
@@ -1281,6 +1303,11 @@ bool SnakeApp::Update(const double& deltaTime)
 	if(!SubmitUniform()) return false;
 
 	return true;
+}
+
+void SnakeApp::Reset()
+{
+	InitApp();
 }
 
 void SnakeApp::HandleInput(vkfw::Window window, vkfw::Key key, int32_t scancode, vkfw::KeyAction action, vkfw::ModifierKeyFlags flags)
@@ -1299,9 +1326,9 @@ void SnakeApp::HandleInput(vkfw::Window window, vkfw::Key key, int32_t scancode,
 	{
 		snake.input = Direction::Up;
 	}
-	if(key == vkfw::Key::eLeft || key == vkfw::Key::eQ || key == vkfw::Key::eA) 
+	if(key == vkfw::Key::eDown || key == vkfw::Key::eS)
 	{
-		snake.input = Direction::Left;
+		snake.input = Direction::Down;
 	}
 	if(key == vkfw::Key::eEscape) vkfw::Result result = window.setShouldClose(true);
 	
@@ -1652,15 +1679,15 @@ void SnakeApp::ChooseSwapChainPresentMode(const std::vector<vk::PresentModeKHR> 
 		}
 	}
 
-//	for(const auto& availablePresentMode : availablePresentModes) 
-//	{
-//		if(availablePresentMode == vk::PresentModeKHR::eImmediate) 
-//		{
-//			MTN_INFO("Immediate Mode");
-//			presentMode = availablePresentMode;
-//			return;
-//		}
-//	}
+	for(const auto& availablePresentMode : availablePresentModes) 
+	{
+		if(availablePresentMode == vk::PresentModeKHR::eImmediate) 
+		{
+			MTN_INFO("Immediate Mode");
+			swapChainPresentMode = availablePresentMode;
+			return;
+		}
+	}
 
 	MTN_INFO("VSYNC MODE");
 	swapChainPresentMode = vk::PresentModeKHR::eFifo;
@@ -1735,13 +1762,12 @@ glm::vec2 SnakeApp::GenerateApple()
 	float y = distribution_1_MaxGrid(random_engine);
 	float divider = 1 / (float)(config.MaxGrid) * (float)(config.gridCount);
 
-	;
 
 
 	x *= divider;
 	y *= divider;
+	
 
-	;
 
 	return glm::floor(glm::vec2{x, y});
 }

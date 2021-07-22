@@ -96,6 +96,7 @@ private:
 	bool Run();
 	bool Update(const double& deltaTime);
 	bool Draw();
+	void Reset();
 
 	void CleanupSwapChain();
 	bool RecreateSwapChain();
@@ -194,6 +195,7 @@ struct SnakeData
 
 	std::vector<TailPart> tail;
 	glm::vec2 applePos;
+	constexpr static glm::vec3 headColor = {0.101, 0.5, 0};
 	constexpr static glm::vec3 color = {0.101, 0.6, 0};
 	constexpr static glm::vec3 appleColor = {0.6, 0.0, 0.0};
 	constexpr static float speed = 15;
