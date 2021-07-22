@@ -203,7 +203,7 @@ void SnakeApp::GetConfig()
 
 		std::vector<std::string> strs;
 		
-		std::transform(line.begin(), line.end(), line.begin(), std::tolower);
+		std::transform(line.begin(), line.end(), line.begin(), Mountain::ToLower);
 		
 		strs.push_back( line.substr( 0, pos) );
 		strs.push_back(line.substr(pos + 1, line.size()));

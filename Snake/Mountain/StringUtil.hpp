@@ -14,6 +14,11 @@ namespace Mountain
 		return std::isspace(c);
 	}
 
+	char ToLower(char c)
+	{
+		return std::tolower(c);
+	}
+
 	// Trim code from SO and adapted to take any char
 	// https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 
