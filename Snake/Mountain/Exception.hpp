@@ -19,8 +19,13 @@ namespace Mountain
 
 	struct Exception : public std::exception
 	{
+		const char* what()
+		{
+			return _data.c_str();
+		}
+
 		Exception(const std::string& message)
-			: std::exception(message.c_str())
+			: _data(message)
 		{
 
 		}
@@ -58,7 +63,10 @@ namespace Mountain
 		{
 			*this = Exception(message, result);
 		}
+		
+		private:
 
+			std::string _data;
 
 	};
 
