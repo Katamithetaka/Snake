@@ -28,7 +28,7 @@ jobs:
           release_name: "Release Snake Game #${{ github.run_id }}"
           tag_name: SnakeAlpha${{github.run_number}} 
           draft: false
-          prerelease: false
+          prerelease: true
 
   build-and-release:
     # The CMake configure and build commands are platform agnostic and should work equally

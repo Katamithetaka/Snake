@@ -6,8 +6,8 @@ set(CXX_STANDARD 17)
 set(CXX_STANDARD_REQUIRED ON)
 
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "empty") 
-    set(CMAKE_BUILD_TYPE "Debug")
+if("${CMAKE_BUILD_TYPE}" STREQUAL "") 
+    set(CMAKE_BUILD_TYPE Debug)
 endif()
 
 
@@ -27,7 +27,8 @@ set(BUILD_SHARED_LIBS ON)
 set(GAME_NAME Snake)
 
 aux_source_directory(${GAME_NAME}/ ${GAME_NAME}_SRC_LIST)
-add_executable(${GAME_NAME} ${${GAME_NAME}_SRC_LIST})
+aux_source_directory(${GAME_NAME}/Mountain MOUNTAIN_SRC_LIST)
+add_executable(${GAME_NAME} ${${GAME_NAME}_SRC_LIST} ${MOUNTAIN_SRC_LIST})
 
 set_property(TARGET ${GAME_NAME} PROPERTY CXX_STANDARD 17)
 set_property(TARGET ${GAME_NAME} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin/$<CONFIG>)
@@ -35,8 +36,8 @@ set_property(TARGET ${GAME_NAME} PROPERTY PDB_OUTPUT_DIRECTORY ${CMAKE_CURRENT_L
 
 set(SHADER_DIR ${CMAKE_CURRENT_LIST_DIR}/${GAME_NAME}/Shaders)
 
-
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+message(${CMAKE_BUILD_TYPE})
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 
     find_package(Vulkan REQUIRED)
 
@@ -57,7 +58,6 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
         add_custom_command(TARGET ${GAME_NAME} POST_BUILD
             COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${SHADER} -o ${SHADER_DIR}/Compiled/${FILENAME}.spv
             DEPENDS ${SHADER}
-            COMMAND ${CMAKE_COMMAND} -E copy ${SHADER_DIR}/Compiled/${FILENAME}.spv $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders
             COMMENT "Compiling ${FILENAME}"
         )
         list(APPEND SPV_SHADERS ${SHADER_DIR}/Compiled/${FILENAME}.spv)
@@ -71,23 +71,24 @@ endif()
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Vendor/GLFW)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Vendor/spdlog)
-target_include_directories(${GAME_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Vendor/GLFW/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/spdlog/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/vkfw/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/Vulkan/include)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Vendor/glm)
+target_include_directories(${GAME_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Vendor/GLFW/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/spdlog/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/vkfw/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/Vulkan/include ${CMAKE_CURRENT_LIST_DIR}/Vendor/glm/)
 if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/Vendor/Vulkan/include/vulkan/vulkan.hpp)
     message(FATAL "Couldn't find vulkan.hpp")
 endif()
 
 
-target_link_libraries(${GAME_NAME} spdlog glfw ${CMAKE_DL_LIBS})
+target_link_libraries(${GAME_NAME} spdlog glfw ${CMAKE_DL_LIBS} glm)
 
 
 add_custom_command(TARGET ${GAME_NAME}
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders/
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw> $<TARGET_FILE_DIR:${GAME_NAME}>/
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${GAME_NAME}>/
-    COMMAND ${CMAKE_COMMAND} -E copy_directory  ${SHADER_DIR}/Compiled $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders
+    COMMAND ${CMAKE_COMMAND} -E copy_directory  ${SHADER_DIR}/Compiled $<TARGET_FILE_DIR:${GAME_NAME}>/Shaders/
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/default${GAME_NAME}Config.txt $<TARGET_FILE_DIR:${GAME_NAME}>/defaultConfig.txt
     COMMAND cd $<TARGET_FILE_DIR:${GAME_NAME}>/
 )
-
 
 

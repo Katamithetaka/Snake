@@ -1,42 +1,30 @@
 #include "SnakeApp.hpp"
 
+#define VULKAN_HPP_NO_EXCEPTIONS 
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC != 1
+	#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+	#include <vulkan/vulkan.hpp>
+	VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#else
+	#include <vulkan/vulkan.hpp>
+#endif
+
+#include "Mountain/Logger.hpp"
+#include <fstream>
+
 int main()
 {
-	try {
-		SnakeApp app;	
-		app.Run();
-	}
-	catch(std::exception e) {
-		MTN_CRITICAL(e.what());
-	}
-
-//	std::cin.get();
+	std::cout << "Hello World";
 	
-// double totalTime = vkfw::getTime();
-// double lastFrame = totalTime;
-// int frames = 0;
-// while(!window.shouldClose())
-// {
-// 	totalTime += vkfw::getTime() - lastFrame;
-// 	lastFrame = vkfw::getTime();
-// 	++frames;
-// 	if(totalTime > 1.0)
-// 	{
-// 
-// 		std::stringstream ss;
-// 
-// 		ss << "Snake Game - " << frames << " fps";
-// 		std::string s = ss.str();
-// 		window.setTitle(ss.str().c_str());
-// 
-// 		totalTime -= 1.0;
-// 		frames = 0;
-// 	}
-// 
-// 	vkfw::pollEvents();
-// }
-// 
-// window.destroy();
+	SnakeApp snake ([](Mountain::Exception error){ MTN_CRITICAL(error.what()); std::ofstream os("./error.log"); os << error.what(); });
 
-	return 0;
+	if(!snake.Initialize()) 
+	{
+		std::cout << "Failed to initialize snake." << std::endl;
+		std::cin.get();
+		return EXIT_FAILURE;
+
+	}
+
+	return EXIT_SUCCESS;
 }

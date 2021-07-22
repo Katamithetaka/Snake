@@ -1,0 +1,19 @@
+#####  DO NOT CHANGE THE DATA IN THIS FILE,
+#####  IT IS THE DEFAULT CONFIGURATION THAT WILL ALWAYS WORK WITH THE PROGRAM, 
+#####  USE IT AS A BACKUP IF YOU DO MISTAKES IN THE ACTUAL CONFIG FILE THAT IS CREATED WHEN YOU RUN THE PROGRAM
+
+#  DO NOT RENAME THIS FILE.
+
+
+# width and height are ignored if set to fullscreen (0 = disabled, 1 = enabled)
+fullscreen: 0
+
+# minimum width is 400
+width: 400
+
+# minimum height is 400
+height: 400
+
+# Max grid size is 80, min grid size is 20
+gridSize: 20 
+

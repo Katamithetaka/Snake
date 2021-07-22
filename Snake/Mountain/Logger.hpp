@@ -1,5 +1,6 @@
-#ifndef MOUNTAIN_LOGGER_HPP
-#define MOUNTAIN_LOGGER_HPP
+#pragma once
+#ifndef E763D60B_39A6_49C3_8904_F89F627C9F70
+#define E763D60B_39A6_49C3_8904_F89F627C9F70
 
 // This ignores all warnings raised inside External headers
 #pragma warning(push, 0)
@@ -43,4 +44,4 @@ namespace Mountain
 #define MTN_ERROR(...)         ::Mountain::Logger::GetClientLogger()->error(__VA_ARGS__)
 #define MTN_CRITICAL(...)      ::Mountain::Logger::GetClientLogger()->critical(__VA_ARGS__)
 
-#endif	// MOUNTAIN_LOGGER_HPP
+#endif /* E763D60B_39A6_49C3_8904_F89F627C9F70 */
