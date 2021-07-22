@@ -9,43 +9,48 @@
 namespace Mountain 
 {
 
+	bool IsSpace(unsigned char c)
+	{
+		return std::isspace(c);
+	}
+
 	// Trim code from SO and adapted to take any char
 	// https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 
 	// trim from start (in place)
-	inline void ltrim(std::string &s, std::function<bool(unsigned char)> f = std::isspace) {
+	inline void ltrim(std::string &s, std::function<bool(unsigned char)> f = IsSpace) {
 		s.erase(s.begin(), std::find_if(s.begin(), s.end(), [&](unsigned char ch) {
 			return !f(ch);
 		}));
 	}
 
 	// trim from end (in place)
-	inline void rtrim(std::string &s, std::function<bool(unsigned char)> f = std::isspace) {
+	inline void rtrim(std::string &s, std::function<bool(unsigned char)> f = IsSpace) {
 		s.erase(std::find_if(s.rbegin(), s.rend(), [&](unsigned char ch) {
 			return !f(ch);
 		}).base(), s.end());
 	}
 
 	// trim from both ends (in place)
-	inline void trim(std::string &s, std::function<bool(unsigned char)> f = std::isspace) {
+	inline void trim(std::string &s, std::function<bool(unsigned char)> f = IsSpace) {
 		ltrim(s, f);
 		rtrim(s, f);
 	}
 
 	// trim from start (copying)
-	inline std::string ltrim_copy(std::string s, std::function<bool(unsigned char)> f = std::isspace) {
+	inline std::string ltrim_copy(std::string s, std::function<bool(unsigned char)> f = IsSpace) {
 		ltrim(s, f);
 		return s;
 	}
 
 	// trim from end (copying)
-	inline std::string rtrim_copy(std::string s, std::function<bool(unsigned char)> f = std::isspace) {
+	inline std::string rtrim_copy(std::string s, std::function<bool(unsigned char)> f = IsSpace) {
 		rtrim(s, f);
 		return s;
 	}
 
 	// trim from both ends (copying)
-	inline std::string trim_copy(std::string s, std::function<bool(unsigned char)> f = std::isspace) {
+	inline std::string trim_copy(std::string s, std::function<bool(unsigned char)> f = IsSpace) {
 		trim(s, f);
 		return s;
 	}
