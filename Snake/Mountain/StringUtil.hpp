@@ -9,12 +9,12 @@
 namespace Mountain 
 {
 
-	bool IsSpace(unsigned char c)
+	inline bool IsSpace(unsigned char c)
 	{
 		return std::isspace(c);
 	}
 
-	char ToLower(char c)
+	inline char ToLower(char c)
 	{
 		return std::tolower(c);
 	}
